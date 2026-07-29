@@ -1,0 +1,4 @@
+telethon
+readchar
+asyncio
+python-dotenv
