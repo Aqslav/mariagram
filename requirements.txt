@@ -2,3 +2,4 @@ telethon
 readchar
 asyncio
 python-dotenv
+pymongo
