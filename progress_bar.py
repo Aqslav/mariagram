@@ -9,6 +9,17 @@ class ProgressBar:
         self._last_length = 0
         self.accepted = 0
 
+    def write(self, *args, end='\n'):
+            with self._lock:
+                # Clear the current progress bar line
+                sys.stdout.write("\r" + " " * self._last_length + "\r")
+                # Write the actual message
+                text = " ".join(str(a) for a in args)
+                sys.stdout.write(text + end)
+                sys.stdout.flush()
+                self._last_length = 0
+
+
     def update(self, value: float, label: str = ""):
         self.accepted = (self.accepted + 1) % self.accept_every
         if self.accepted != 0:
