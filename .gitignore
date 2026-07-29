@@ -223,3 +223,4 @@ data/
 *.session-journal
 desktop.ini
 logger_state.json
+misc/
