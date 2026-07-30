@@ -212,6 +212,19 @@ class LogDB:
             info.get("time_formatted"),
             info.get("message_text")
         ))
+    @staticmethod
+    def _atomic_copy(log_file: str, backup_file: str, tmp_file: str):
+        if os.path.exists(tmp_file):
+            os.remove(tmp_file)
+        src = sqlite3.connect(f"file:{log_file}?mode=ro", uri=True)
+        dst = sqlite3.connect(tmp_file)
+        try:
+            with dst:
+                src.backup(dst)
+        finally:
+            dst.close()
+            src.close()
+        os.replace(tmp_file, backup_file)
 
     def log_message(self, info):
         with self.lock:
@@ -220,6 +233,7 @@ class LogDB:
             LogDB._ensure_sender_exists(cursor, info)
             LogDB._insert_message(cursor, info)
             conn.commit()
+            LogDB._atomic_copy(self.log_file, self.log_file.replace(".db", "_backup.db"), self.log_file.replace(".db", "_tmp.db"))
             conn.close()
 
     def get_oldest_dates(self):
