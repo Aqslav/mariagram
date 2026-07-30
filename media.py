@@ -65,7 +65,8 @@ async def handle_chat(client: TelegramClient, chat_id: int):
 
 async def handle_all(client: TelegramClient):
     dialogs = await client.get_dialogs()
-    async for i, dialog in enumerate(dialogs):
+    global label
+    for i, dialog in enumerate(dialogs):
         chat_id = dialog.id
         printer(f"Processing chat: {dialog.name} (ID: {chat_id})")
         label = f'{i+1}/{len(dialogs)}: {dialog.name}'
