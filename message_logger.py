@@ -50,13 +50,22 @@ class MessageLogger:
             json.dump({"last_message_time": dt.isoformat()}, f)
 
     async def message_handler(self, message, new = True):   
-        info = await get_info(message)
-        if (PRINT_CHANNELS or get_chat_type(message) != "broadcast_channel") and self.print_messages and new:
-            print_message(info)
-        log_db.log_message(info)
-        raw_log_db.log_message(message)
-        if self.on_message:
-            self.on_message(info, new)
+        attempts = 0
+        max_attempts = 100
+        while True:
+            try:
+                info = await get_info(message)
+                if (PRINT_CHANNELS or get_chat_type(message) != "broadcast_channel") and self.print_messages and new:
+                    print_message(info)
+                log_db.log_message(info)
+                raw_log_db.log_message(message)
+                if self.on_message:
+                    self.on_message(info, new)
+                break
+            except:
+                attempts += 1
+                if attempts >= max_attempts:
+                    break
 
     class DialogItem():
         def __init__(self, dialog, last_seen, count, done):
