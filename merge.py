@@ -4,7 +4,7 @@ import os
 this_folder = os.path.dirname(os.path.abspath(__file__))
 os.chdir(os.path.join(this_folder, "data"))
 
-def main():
+def merge():
     db_paths = os.listdir(".")
     log_conn = sqlite3.connect("message_log.db")
     log_cursor = log_conn.cursor()
@@ -40,4 +40,4 @@ def main():
     log_conn.close()
 
 if __name__ == "__main__":
-    main()
+    merge()
